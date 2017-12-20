@@ -21,14 +21,14 @@ a = lamb / (rho*cp)
 # Géométrie
 Lx = 1
 Ly = 1
-Nx = 100
-Ny = 100
+Nx = 10
+Ny = 10
 dx = Lx/Nx
 dy = Ly/Ny
 
 # Temps
 Timetot = 1
-N = 100
+N = 10
 dt = Timetot/N
 
 # Nombres de Fourier
@@ -36,10 +36,16 @@ Fx = a*dt/dx**2
 Fy = a*dt/dy**2
 
 # Temperature
-T = np.empty((N,Nx,Ny))
+Ti = np.empty((Nx,Ny))
+Tf = np.empty((Nx,Ny))
+Tinter = np.empty_like(Ti)
 
-T[0,:,:] = T0
-T[:,:,0] = T1
+# Condition intiale
+Ti[:,:] = T0
+
+# Condition aux limites y=0
+Ti[:,0] = T1
+Tinter[:,0] = T1
 
 for n in range(1,N):
     
@@ -58,17 +64,43 @@ for n in range(1,N):
         c[Nx-1] = -Fx/2 * (1 + 1/(2*dx*h+lamb))
         
         if j!=Ny-1:
-            d[:] = T[n-1,:,j] + Fy/2 * (T[n-1,:,j+1]-2*T[n-1,:,j]+T[n-1,:,j-1])   
+            d[:] = Ti[:,j] + Fy/2 * (Ti[:,j+1]-2*Ti[:,j]+Ti[:,j-1])   
         else:    
-            d[:] = T[n-1,:,j] + Fy/2 * 2*(-T[n-1,:,j]+T[n-1,:,j-1])  
+            d[:] = Ti[:,j] + Fy/2 * 2*(-Ti[:,j]+Ti[:,j-1])  
         d[Nx-1] += Fx * dx*h*Ta / (2*dx*h+lamb)
         
-        Tinter = np.empty_like(T[0,:,:])
         Tinter[:,j] = TDMA(a,b,c,d)
         
-    for i in range(0,Nx):
+    for i in range(Nx):
+        a = np.ones(Ny)*(1+Fy)
+        b = np.empty(Ny)
+        c = np.empty(Ny)
+        d = np.empty(Ny)
         
-            
+        a[0] = 1
+        
+        b[0] = 0
+        b[1:Ny-2] = -Fy/2
+        b[Ny-1] = 0
+        
+        c[0] = 0
+        c[1:Ny-2] = -Fy/2
+        c[Ny-1] = -Fy
+        
+        if i==0:
+            d[:] = Tinter[i,:] + Fx*(Tinter[i+1,:]-Tinter[i,:])
+        elif i==Nx-1:
+            d[:] = Tinter[i,:] + Fx/2*( (1+lamb/(2*dx*h+lamb))*Tinter[i-1,:] - 2*Tinter[i,:]) + Fx*dx*h*Ta/(2*dx*h+lamb)
+        else:
+            d[:] = Tinter[i,:] + Fx/2*(Tinter[i+1,:]-2*Tinter[i,:]+Tinter[i-1,:])
+        d[0] = T1
+        
+        Tf[i,:] = TDMA(a,b,c,d)
+        
+    Ti = Tf
+    
+    np.savetxt('output_'+str(n)+'.csv', Ti)
+        
         
         
         
