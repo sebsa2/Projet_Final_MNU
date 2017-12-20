@@ -48,8 +48,11 @@ Ti[:,0] = T1
 Tinter[:,0] = T1
 
 for n in range(1,N):
+    print("")
+    print("Time:",n)
     
-    for j in range(1,Ny):   
+    for j in range(1,Ny):
+        print("Selon Y:",j)
         a = np.ones(Nx)*(1+Fx)
         b = np.empty(Nx)
         c = np.empty(Nx)
@@ -74,6 +77,7 @@ for n in range(1,N):
     np.savetxt('out/inter_'+str(n)+'.csv', Tinter)
 
     for i in range(Nx):
+        print("Selon X:",i)
         a = np.ones(Ny)*(1+Fy)
         b = np.empty(Ny)
         c = np.empty(Ny)
@@ -89,10 +93,12 @@ for n in range(1,N):
         c[1:Ny-1] = -Fy/2
         c[Ny-1] = -Fy
         
+        # TODO: Il me semble que l'erreur soit située dans le d
         if i==0:
             d[:] = Tinter[i,:]*(1-Fx) + Fx*Tinter[i+1,:]
         elif i==Nx-1:
-            d[:] = Tinter[i,:]*(1-Fx) + Fx/2*( (1+lamb/(2*dx*h+lamb))*Tinter[i-1,:]) + Fx*dx*h*Ta/(2*dx*h+lamb)
+#            d[:] = Tinter[i,:]*(1-Fx) + Fx/2*( (1+lamb/(2*dx*h+lamb))*Tinter[i-1,:]) + Fx*dx*h*Ta/(2*dx*h+lamb)
+            d[:] = Tinter[i,:]*(1-Fx+Fx*dx*h/lamb) + Tinter[i-1,:]*Fx - Fx*dx*h*Ta/lamb
         else:
             d[:] = Tinter[i,:]*(1-Fx) + Fx/2*(Tinter[i+1,:]+Tinter[i-1,:])
         d[0] = T1

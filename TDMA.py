@@ -35,7 +35,7 @@ def TDMA(a,b,c,d):
         P[i] = b[i] / (a[i] - c[i]*P[i-1])
         Q[i] = (d[i] + c[i]*Q[i-1]) / (a[i] - c[i]*P[i-1])
         
-    f[N-1] = Q[N-1]
+    f[N-1] = Q[N-1] # Problem usually occurs right here, Q[N-1] is below Tmin
     
     for i in range(N-2, -1, -1):
         f[i] = P[i]*f[i+1] + Q[i]
