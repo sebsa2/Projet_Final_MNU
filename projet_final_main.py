@@ -12,28 +12,28 @@ Ta = 280
 T1 = 500
 h = 5
 
-# Materiau
-lamb = 1
-cp = 1
-rho = 1
-a = lamb / (rho*cp)
+# Materiau : cuivre pur par exemple
+lamb = 386 # W.m^-1.K^-1
+cp = 385 # J.kg^-1.K^-1
+rho = 8960 # kg.m^-3
+diff = lamb / (rho*cp) # m^2.s^-1 # Variable a déjà prise plus loin
 
 # Géométrie
 Lx = 1
 Ly = 1
-Nx = 10
-Ny = 10
+Nx = 15
+Ny = Nx
 dx = Lx/Nx
 dy = Ly/Ny
 
 # Temps
 Timetot = 1
-N = 100
+N = 4
 dt = Timetot/N
 
 # Nombres de Fourier
-Fx = a*dt/dx**2
-Fy = a*dt/dy**2
+Fx = diff*dt/dx**2
+Fy = diff*dt/dy**2
 
 # Temperature
 Ti = np.empty((Nx,Ny))
@@ -56,11 +56,11 @@ for n in range(1,N):
         d = np.empty(Nx)
         
         b[0] = -Fx
-        b[1:Nx-2] = -Fx/2
+        b[1:Nx-1] = -Fx/2
         b[Nx-1] = 0
         
         c[0] = 0
-        c[1:Nx-2] = -Fx/2
+        c[1:Nx-1] = -Fx/2
         c[Nx-1] = -Fx/2 * (1 + 1/(2*dx*h+lamb))
         
         if j!=Ny-1:
@@ -71,6 +71,8 @@ for n in range(1,N):
         
         Tinter[:,j] = TDMA(a,b,c,d)
         
+    np.savetxt('out/inter_'+str(n)+'.csv', Tinter)
+
     for i in range(Nx):
         a = np.ones(Ny)*(1+Fy)
         b = np.empty(Ny)
@@ -80,11 +82,11 @@ for n in range(1,N):
         a[0] = 1
         
         b[0] = 0
-        b[1:Ny-2] = -Fy/2
+        b[1:Ny-1] = -Fy/2
         b[Ny-1] = 0
         
         c[0] = 0
-        c[1:Ny-2] = -Fy/2
+        c[1:Ny-1] = -Fy/2
         c[Ny-1] = -Fy
         
         if i==0:
