@@ -28,7 +28,7 @@ dy = Ly/Ny
 
 # Temps
 Timetot = 1
-N = 10
+N = 100
 dt = Timetot/N
 
 # Nombres de Fourier
@@ -64,9 +64,9 @@ for n in range(1,N):
         c[Nx-1] = -Fx/2 * (1 + 1/(2*dx*h+lamb))
         
         if j!=Ny-1:
-            d[:] = Ti[:,j] + Fy/2 * (Ti[:,j+1]-2*Ti[:,j]+Ti[:,j-1])   
+            d[:] = Ti[:,j]*(1-Fy) + Fy/2 * (Ti[:,j+1]+Ti[:,j-1])   
         else:    
-            d[:] = Ti[:,j] + Fy/2 * 2*(-Ti[:,j]+Ti[:,j-1])  
+            d[:] = Ti[:,j]*(1-Fy) + Fy*Ti[:,j-1]
         d[Nx-1] += Fx * dx*h*Ta / (2*dx*h+lamb)
         
         Tinter[:,j] = TDMA(a,b,c,d)
@@ -88,11 +88,11 @@ for n in range(1,N):
         c[Ny-1] = -Fy
         
         if i==0:
-            d[:] = Tinter[i,:] + Fx*(Tinter[i+1,:]-Tinter[i,:])
+            d[:] = Tinter[i,:]*(1-Fx) + Fx*Tinter[i+1,:]
         elif i==Nx-1:
-            d[:] = Tinter[i,:] + Fx/2*( (1+lamb/(2*dx*h+lamb))*Tinter[i-1,:] - 2*Tinter[i,:]) + Fx*dx*h*Ta/(2*dx*h+lamb)
+            d[:] = Tinter[i,:]*(1-Fx) + Fx/2*( (1+lamb/(2*dx*h+lamb))*Tinter[i-1,:]) + Fx*dx*h*Ta/(2*dx*h+lamb)
         else:
-            d[:] = Tinter[i,:] + Fx/2*(Tinter[i+1,:]-2*Tinter[i,:]+Tinter[i-1,:])
+            d[:] = Tinter[i,:]*(1-Fx) + Fx/2*(Tinter[i+1,:]+Tinter[i-1,:])
         d[0] = T1
         
         Tf[i,:] = TDMA(a,b,c,d)
