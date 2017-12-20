@@ -99,7 +99,7 @@ for n in range(1,N):
         
     Ti = Tf
     
-    np.savetxt('output_'+str(n)+'.csv', Ti)
+    np.savetxt('out/output_'+str(n)+'.csv', Ti)
         
         
         
