@@ -9,7 +9,8 @@ Created on Wed Dec 20 11:37:55 2017
 import matplotlib.pyplot as plt
 import numpy as np
 
-Tf = np.genfromtxt('out/output_1.csv')
+i = 19
+Tf = np.genfromtxt('out/output_' + str(i) + '.csv')
 
 X = np.arange(Tf.shape[0])
 Y = np.arange(Tf.shape[1])
