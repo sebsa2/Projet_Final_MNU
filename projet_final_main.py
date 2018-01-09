@@ -9,8 +9,8 @@ from TDMA import TDMA
 # Conditions exterieures
 T0 = 300
 Ta = 200
-T1 = 400
-h = 5
+T1 = 500
+h = 100
 
 # Materiau : cuivre pur par exemple
 lamb = 386 # W.m^-1.K^-1
@@ -21,13 +21,13 @@ diff = lamb / (rho*cp) # m^2.s^-1 # Variable a déjà prise plus loin
 # Géométrie
 Lx = 1
 Ly = 1
-Nx = 100
+Nx = 10
 Ny = Nx
 dx = Lx/Nx
 dy = Ly/Ny
 
 # Temps
-Timetot = 100
+Timetot = 1000
 N = 100
 dt = Timetot/N
 
@@ -90,20 +90,6 @@ for n in range(1,N):
             d[0:Nx-1] = Ti[0:Nx-1,j]*(1-Fy) + Fy/2*(Ti[0:Nx-1,j+1]+Ti[0:Nx-1,j-1])
             d[Nx-1] = Ti[Nx-1,j]*(1-Fy) + Fy/2*(Ti[Nx-1,j+1]+Ti[Nx-1,j-1]) + Fx*Ta*dx*h/lamb
         
-#        b[0] = Fx
-#        b[1:Nx-1] = Fx/2
-#        b[Nx-1] = 0
-#        
-#        c[0] = 0
-#        c[1:Nx-1] = Fx/2
-#        c[Nx-1] = Fx/2 * (1 + 1/(2*dx*h+lamb))
-#        
-#        if j!=Ny-1:
-#            d[:] = Ti[:,j]*(1-Fy) + Fy/2 * (Ti[:,j+1]+Ti[:,j-1])   
-#        else:    
-#            d[:] = Ti[:,j]*(1-Fy) + Fy*Ti[:,j-1]
-#        d[Nx-1] += Fx * dx*h*Ta / (2*dx*h+lamb)
-        
         Tinter[:,j] = TDMA(a,b,c,d)
         
     np.savetxt('out/inter_'+str(n)+'.csv', Tinter)
@@ -150,27 +136,6 @@ for n in range(1,N):
             c[Ny-1] = Fy
             d[0] = T1
             d[1:Ny] = Tinter[i,1:Ny]*(1-Fx) + Fx/2*(Tinter[i+1,1:Ny]+Tinter[i-1,1:Ny])
-            
-            
-#        a[0] = 1
-#        
-#        b[0] = 0
-#        b[1:Ny-1] = -Fy/2
-#        b[Ny-1] = 0
-#        
-#        c[0] = 0
-#        c[1:Ny-1] = -Fy/2
-#        c[Ny-1] = -Fy
-#        
-#        # TODO: Il me semble que l'erreur soit située dans le d
-#        if i==0:
-#            d[:] = Tinter[i,:]*(1-Fx) + Fx*Tinter[i+1,:]
-#        elif i==Nx-1:
-##            d[:] = Tinter[i,:]*(1-Fx) + Fx/2*( (1+lamb/(2*dx*h+lamb))*Tinter[i-1,:]) + Fx*dx*h*Ta/(2*dx*h+lamb)
-#            d[:] = Tinter[i,:]*(1-Fx-Fx*dx*h/lamb) + Tinter[i-1,:]*Fx + Fx*dx*h*Ta/lamb
-#        else:
-#            d[:] = Tinter[i,:]*(1-Fx) + Fx/2*(Tinter[i+1,:]+Tinter[i-1,:])
-#        d[0] = T1
         
         Tf[i,:] = TDMA(a,b,c,d)
         
