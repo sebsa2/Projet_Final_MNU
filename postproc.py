@@ -23,4 +23,4 @@ im = ax1.pcolormesh(X,Y,Tf)
 fig.colorbar(im)
 
 fig, ax2 = plt.subplots(figsize=(12,10))
-ax2.plot(X,Tf[10,:])
+ax2.plot(X,Tf[2,:])
