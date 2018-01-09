@@ -40,23 +40,23 @@ def TDMA(a,b,c,d):
     for i in range(N-2, -1, -1):
         f[i] = P[i]*f[i+1] + Q[i]
         if f[i]>Tmax or f[i]<Tmin:
-            print("i:",i)
-            print("f[i]:",f[i], " P[i]:",P[i], " f[i+1]:",f[i+1], " Q[i]:",Q[i])
-            print("a[i]:", a[i], " b[i]:", b[i], " c[i]:", c[i], " d[i]:", d[i])
-            
-            print("")
-            print("Comparison with previous i:")
-            i+=1
-            
-            print("i:",i)
-            print("f[i]:",f[i], " P[i]:",P[i], " Q[i]:",Q[i])
-            print("a[i]:", a[i], " b[i]:", b[i], " c[i]:", c[i], " d[i]:", d[i])
-            
-            print("")
-            print(a)
-            print(b)
-            print(c)
-            print(d)
+#            print("i:",i)
+#            print("f[i]:",f[i], " P[i]:",P[i], " f[i+1]:",f[i+1], " Q[i]:",Q[i])
+#            print("a[i]:", a[i], " b[i]:", b[i], " c[i]:", c[i], " d[i]:", d[i])
+#            
+#            print("")
+#            print("Comparison with previous i:")
+#            i+=1
+#            
+#            print("i:",i)
+#            print("f[i]:",f[i], " P[i]:",P[i], " Q[i]:",Q[i])
+#            print("a[i]:", a[i], " b[i]:", b[i], " c[i]:", c[i], " d[i]:", d[i])
+#            
+#            print("")
+#            print(a)
+#            print(b)
+#            print(c)
+#            print(d)
             raise Exception("Temperature out of range.")
         
     return f
