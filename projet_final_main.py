@@ -5,37 +5,7 @@ Projet MNU main
 
 import numpy as np
 from TDMA import TDMA
-
-# Conditions exterieures
-T0 = 300
-Ta = 200
-T1 = 500
-h = 100
-
-# Materiau : cuivre pur par exemple
-lamb = 386 # W.m^-1.K^-1
-cp = 385 # J.kg^-1.K^-1
-rho = 8960 # kg.m^-3
-diff = lamb / (rho*cp) # m^2.s^-1 # Variable a déjà prise plus loin
-
-# Géométrie
-Lx = 1
-Ly = 1
-Nx = 10
-Ny = Nx
-dx = Lx/Nx
-dy = Ly/Ny
-
-# Temps
-Timetot = 1000
-N = 100
-dt = Timetot/N
-
-# Nombres de Fourier
-Fx = diff*dt/dx**2
-Fy = diff*dt/dy**2
-print('Fx=',Fx)
-print('Fy=',Fy)
+from variables import T0,Ta,T1,h, lamb, Nx,Ny,dx, N, Fx,Fy
 
 # Temperature
 Ti = np.empty((Nx,Ny))
@@ -48,6 +18,10 @@ Ti[:,:] = T0
 # Condition aux limites y=0
 Ti[:,0] = T1
 Tinter[:,0] = T1
+
+
+print('Fx=',Fx)
+print('Fy=',Fy)
 
 for n in range(1,N):
 #    print("")
