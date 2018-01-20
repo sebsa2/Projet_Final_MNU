@@ -16,8 +16,8 @@ Tf = np.genfromtxt('out/output_' + str(i) + '.csv')
 
 Tf = Tf.transpose()
 
-X = np.arange(Tf.shape[0])
-Y = np.arange(Tf.shape[1])
+X = np.arange(Tf.shape[0]) / Nx * Lx
+Y = np.arange(Tf.shape[1]) / Ny * Ly
 
 
 fig, ax1 = plt.subplots(figsize=(12,10))
@@ -29,10 +29,11 @@ plt.title("Simulation")
 #fig, ax2 = plt.subplots(figsize=(12,10))
 #ax2.plot(X,Tf[2,:])
 
-    
-Tanaly, mysum = analy(T1, Ta, h, lamb, Lx, Ly, Nx, Ny, n=10)
-X = np.arange(Tanaly.shape[0])
-Y = np.arange(Tanaly.shape[1])
+n = 100
+err = 0.0001
+Tanaly = analy(T1, Ta, h, lamb, Lx, Ly, Nx, Ny, n=n, err=err)
+X = np.arange(Tanaly.shape[0]) / Nx * Lx
+Y = np.arange(Tanaly.shape[1]) / Ny * Ly
 
 
 fig, ax3 = plt.subplots(figsize=(12,10))
@@ -40,3 +41,4 @@ fig, ax3 = plt.subplots(figsize=(12,10))
 im = ax3.pcolormesh(X,Y,Tanaly)
 fig.colorbar(im)
 plt.title("Analytic")
+
