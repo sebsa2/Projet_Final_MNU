@@ -19,6 +19,10 @@ Ti[:,:] = T0
 Ti[:,0] = T1
 Tinter[:,0] = T1
 
+# Skip unnecessary write of files
+skip_write_inter = True
+skip_modulo = 100
+
 
 print('Fx=',Fx)
 print('Fy=',Fy)
@@ -66,7 +70,8 @@ for n in range(1,N):
         
         Tinter[:,j] = TDMA(a,b,c,d)
         
-    np.savetxt('out/inter_'+str(n)+'.csv', Tinter)
+    if not skip_write_inter:
+        np.savetxt('out/inter_'+str(n)+'.csv', Tinter)
 
     for i in range(Nx):
 #        print("Selon X:",i)
@@ -115,8 +120,14 @@ for n in range(1,N):
         
     Ti = Tf
     
-    np.savetxt('out/output_'+str(n)+'.csv', Ti)
+    if n%skip_modulo == 0:
+        np.savetxt('out/output_'+str(n)+'.csv', Ti)
         
+# Save the last occurence anyway
+if n%skip_modulo != 0:
+    np.savetxt("out/output_" + str(n) +  ".csv", Ti)
+    
+print("Computation terminated.")
         
         
         
