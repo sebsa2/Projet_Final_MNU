@@ -21,7 +21,7 @@ Tinter[:,0] = T1
 
 # Skip unnecessary write of files
 skip_write_inter = True
-skip_modulo = 100
+skip_modulo = 500
 
 
 print('Fx=',Fx)

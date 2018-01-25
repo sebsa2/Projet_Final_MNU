@@ -21,14 +21,14 @@ diff = lamb / (rho*cp) # m^2.s^-1 # Variable a déjà prise plus loin
 # Géométrie
 Lx = 1
 Ly = 1
-Nx = 50
-Ny = 50
+Nx = 300
+Ny = 300
 dx = Lx/Nx
 dy = Ly/Ny
 
 # Temps
 Timetot = 10000
-N = 5000
+N = 10000
 dt = Timetot/N
 
 # Nombres de Fourier
