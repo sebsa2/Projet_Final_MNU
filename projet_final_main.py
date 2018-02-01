@@ -8,12 +8,19 @@ import shutil
 import numpy as np
 from TDMA import TDMA
 from variables import T0,Ta,T1,h, lamb, Nx,Ny,dx, N, Fx,Fy
+from tqdm import tqdm
 
-for i in range(15):
-    folder_path = 'err_tempo_{0}'.format(i)
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-        break
+maille = True
+
+if maille:
+    folder_path = 'err_maille'
+    #os.makedirs(folder_path)
+else:
+    for i in range(15):
+        folder_path = 'err_tempo_{0}'.format(i)
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            break
     
 shutil.copyfile('variables.py', folder_path+'/variables.py')
 
@@ -37,7 +44,8 @@ skip_modulo = 500
 print('Fx=',Fx)
 print('Fy=',Fy)
 
-for n in range(1,N):
+#for n in range(1,N):
+for n in tqdm(range(1,N)):
 #    print("")
 #    print("Time:",n)
     
@@ -130,12 +138,15 @@ for n in range(1,N):
         
     Ti = Tf
     
-    if n%skip_modulo == 0:
-        np.savetxt(folder_path+'/output_'+str(n)+'.csv', Ti)
+    #if n%skip_modulo == 0:
+  #      np.savetxt(folder_path+'/output_'+str(n)+'.csv', Ti)
         
 # Save the last occurence anyway
 if n%skip_modulo != 0:
-    np.savetxt(folder_path+"/output_" + str(n) +  ".csv", Ti)
+    if maille:
+        np.savetxt(folder_path+"/output_" + str(Nx) +  ".csv", Ti)
+    else:
+        np.savetxt(folder_path+"/output_" + str(n) +  ".csv", Ti)
     
 print("Computation terminated.")
         
