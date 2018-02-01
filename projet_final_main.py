@@ -4,16 +4,18 @@ Projet MNU main
 """
 
 import os
+import shutil
 import numpy as np
 from TDMA import TDMA
 from variables import T0,Ta,T1,h, lamb, Nx,Ny,dx, N, Fx,Fy
-
 
 for i in range(15):
     folder_path = 'err_tempo_{0}'.format(i)
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
         break
+    
+shutil.copyfile('variables.py', folder_path+'/variables.py')
 
 # Temperature
 Ti = np.empty((Nx,Ny))
