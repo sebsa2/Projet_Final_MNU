@@ -19,16 +19,17 @@ rho = 8960 # kg.m^-3
 diff = lamb / (rho*cp) # m^2.s^-1 # Variable a déjà prise plus loin
 
 # Géométrie
-Lx = 1
-Ly = 1
-Nx = 50
-Ny = 50
+Lx = 0.1
+Ly = 0.1
+Nx = 100
+Ny = 100
 dx = Lx/Nx
 dy = Ly/Ny
 
 # Temps
-Timetot = 10000
-N = 5000
+Timetot = 500
+N = diff*Timetot / (dx**2)
+N = int(N)
 dt = Timetot/N
 
 # Nombres de Fourier

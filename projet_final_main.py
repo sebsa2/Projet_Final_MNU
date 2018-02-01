@@ -3,9 +3,17 @@
 Projet MNU main
 """
 
+import os
 import numpy as np
 from TDMA import TDMA
 from variables import T0,Ta,T1,h, lamb, Nx,Ny,dx, N, Fx,Fy
+
+
+for i in range(15):
+    folder_path = 'err_tempo_{0}'.format(i)
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+        break
 
 # Temperature
 Ti = np.empty((Nx,Ny))
@@ -21,7 +29,7 @@ Tinter[:,0] = T1
 
 # Skip unnecessary write of files
 skip_write_inter = True
-skip_modulo = 100
+skip_modulo = 500
 
 
 print('Fx=',Fx)
@@ -71,7 +79,7 @@ for n in range(1,N):
         Tinter[:,j] = TDMA(a,b,c,d)
         
     if not skip_write_inter:
-        np.savetxt('out/inter_'+str(n)+'.csv', Tinter)
+        np.savetxt(folder_path+'/inter_'+str(n)+'.csv', Tinter)
 
     for i in range(Nx):
 #        print("Selon X:",i)
@@ -121,11 +129,11 @@ for n in range(1,N):
     Ti = Tf
     
     if n%skip_modulo == 0:
-        np.savetxt('out/output_'+str(n)+'.csv', Ti)
+        np.savetxt(folder_path+'/output_'+str(n)+'.csv', Ti)
         
 # Save the last occurence anyway
 if n%skip_modulo != 0:
-    np.savetxt("out/output_" + str(n) +  ".csv", Ti)
+    np.savetxt(folder_path+"/output_" + str(n) +  ".csv", Ti)
     
 print("Computation terminated.")
         

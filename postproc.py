@@ -12,7 +12,7 @@ from analy import analy
 from variables import T1, Ta, h, lamb, Lx, Ly, Nx, Ny
 import math
 
-i = 4999
+i = 400
 Tf = np.genfromtxt('out/output_' + str(i) + '.csv')
 
 Tf = Tf.transpose()
