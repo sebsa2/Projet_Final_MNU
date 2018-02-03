@@ -13,7 +13,7 @@ from variables import T1, Ta, h, lamb, Lx, Ly, Nx, Ny
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
-def analy(T1, Ta, h, lamb, Lx, Ly, Nx, Ny, n=10, err=0.001, test=False, test2=False, disp=False):
+def analy(T1, Ta, h, lamb, Lx, Ly, Nx, Ny, n=10, err=0.001, test=False, test2=False):
     beta = h/lamb
     
     alpha = np.empty(n)
@@ -43,10 +43,9 @@ def analy(T1, Ta, h, lamb, Lx, Ly, Nx, Ny, n=10, err=0.001, test=False, test2=Fa
                 
         
         # Comparaison deux termes d'affilée 
-        if test2 or disp:
-            if np.max(np.abs(termek)) < err:
-                print("Terminé avec k=",k)
-                break
+        if np.max(np.abs(termek)) < err:
+            print("Terminé avec k=",k)
+            break
     
     T[:,:] = Ta + 2*beta * (T1 - Ta) * mysum[:,:]
     
