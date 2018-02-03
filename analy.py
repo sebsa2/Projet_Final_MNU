@@ -11,20 +11,20 @@ from math import tan, pi, cos, cosh
 import numpy as np
 from variables import T1, Ta, h, lamb, Lx, Ly, Nx, Ny
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
-def analy(T1, Ta, h, lamb, Lx, Ly, Nx, Ny, n=10, err=0.001, test=False):
+def analy(T1, Ta, h, lamb, Lx, Ly, Nx, Ny, n=10, err=0.001, test=False, test2=False, disp=False):
     beta = h/lamb
     
     alpha = np.empty(n)
     
     mysum = np.zeros((Ny, Nx))
+    termek = np.zeros((Ny, Nx))
     x = np.arange(Nx)
     y = np.arange(Ny)
     T = np.empty((Ny, Nx))
     
-    for k in range(n):
-#        if k == 0:
-#            continue
+    for k in tqdm(range(n)):
         mini = k*pi / Lx
         maxi = (k+1/2)*pi / Lx # maxi = mini + alpha[k-1]
         
@@ -38,11 +38,19 @@ def analy(T1, Ta, h, lamb, Lx, Ly, Nx, Ny, n=10, err=0.001, test=False):
         
         for i in x:
             for j in y:
-                mysum[j,i] += (cos(alpha[k]*(i*Lx/Nx)) * cosh(alpha[k]*(Ly-(j*Ly/Ny)))) / denom
+                termek[j,i] = (cos(alpha[k]*(i*Lx/Nx)) * cosh(alpha[k]*(Ly-(j*Ly/Ny)))) / denom
+                mysum += termek
+                
+        
+        # Comparaison deux termes d'affilée 
+        if test2 or disp:
+            if np.max(np.abs(termek)) < err:
+                print("Terminé avec k=",k)
+                break
     
     T[:,:] = Ta + 2*beta * (T1 - Ta) * mysum[:,:]
     
-    if test:
+    if test or test2:
         return T, mysum, alpha
     else:
         return T
@@ -88,24 +96,27 @@ if __name__ == "__main__":
     n=5
     err=0.0001
     beta = h/lamb
-    Tanaly, mysum, alpha = analy(T1, Ta, h, lamb, Lx, Ly, Nx, Ny, n=n, err=err, test=True)
-    f = np.tan(alpha * Lx)
-    
-    X = np.arange((n/Lx)*pi*1000) / 1000
-    #Y = np.arange(2000)/1000 - 1
-    
-    fig = plt.plot(X, np.tan(X*Lx), X, beta/X)
-    plt.plot(alpha, f, "ro")
-    
-    x1 = np.arange(n/Lx) * pi
-    y1 = x1 * 0
-    plt.plot(x1, y1, "g+")
-    
-    axes = plt.gca()
-    axes.set_ylim([-1,1])
-    plt.show()
-    
-    print(alpha)
-    print(np.arange(len(alpha))*pi/2)
-    print(alpha * np.tan(Lx * alpha) - beta)
-    print(np.arange(n)*pi/2)
+    test = False
+    test2 = True
+    Tanaly, mysum, alpha = analy(T1, Ta, h, lamb, Lx, Ly, Nx, Ny, n=n, err=err, test=test, test2=test2)
+    if test:
+        f = np.tan(alpha * Lx)
+        
+        X = np.arange((n/Lx)*pi*1000) / 1000
+        #Y = np.arange(2000)/1000 - 1
+        
+        fig = plt.plot(X, np.tan(X*Lx), X, beta/X)
+        plt.plot(alpha, f, "ro")
+        
+        x1 = np.arange(n/Lx) * pi
+        y1 = x1 * 0
+        plt.plot(x1, y1, "g+")
+        
+        axes = plt.gca()
+        axes.set_ylim([-1,1])
+        plt.show()
+        
+        print(alpha)
+        print(np.arange(len(alpha))*pi/2)
+        print(alpha * np.tan(Lx * alpha) - beta)
+        print(np.arange(n)*pi/2)
