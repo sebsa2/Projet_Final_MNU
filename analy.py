@@ -18,11 +18,11 @@ def analy(T1, Ta, h, lamb, Lx, Ly, Nx, Ny, n=10, err=0.001, test=False, test2=Fa
     
     alpha = np.empty(n)
     
-    mysum = np.zeros((Ny, Nx))
-    termek = np.zeros((Ny, Nx))
+    mysum = np.zeros((Nx, Ny))
+    termek = np.zeros((Nx, Ny))
     x = np.arange(Nx)
     y = np.arange(Ny)
-    T = np.empty((Ny, Nx))
+    T = np.empty((Nx, Ny))
     
     for k in tqdm(range(n)):
         mini = k*pi / Lx
@@ -38,17 +38,16 @@ def analy(T1, Ta, h, lamb, Lx, Ly, Nx, Ny, n=10, err=0.001, test=False, test2=Fa
         
         for i in x:
             for j in y:
-                termek[j,i] = (cos(alpha[k]*(i*Lx/Nx)) * cosh(alpha[k]*(Ly-(j*Ly/Ny)))) / denom
-                mysum += termek
+                termek[i,j] = (cos(alpha[k]*(i*Lx/Nx)) * cosh(alpha[k]*(Ly-(j*Ly/Ny)))) / denom
+        mysum += termek
                 
-        
         # Comparaison deux termes d'affilée 
         if np.max(np.abs(termek)) < err:
-            print("Terminé avec k=",k)
+#            print("Terminé avec k=",k)
             break
     
     T[:,:] = Ta + 2*beta * (T1 - Ta) * mysum[:,:]
-    
+    T = T.transpose()
     if test or test2:
         return T, mysum, alpha
     else:
@@ -92,12 +91,14 @@ def dicho(mini, maxi, beta, err, Lx):
     return var
 
 if __name__ == "__main__":
-    n=5
+    n=35
     err=0.0001
     beta = h/lamb
     test = False
-    test2 = True
-    Tanaly, mysum, alpha = analy(T1, Ta, h, lamb, Lx, Ly, Nx, Ny, n=n, err=err, test=test, test2=test2)
+    test2 = False
+    disp = True
+    if test or test2:
+        Tanaly, mysum, alpha = analy(T1, Ta, h, lamb, Lx, Ly, Nx, Ny, n=n, err=err, test=test, test2=test2)
     if test:
         f = np.tan(alpha * Lx)
         
@@ -119,3 +120,21 @@ if __name__ == "__main__":
         print(np.arange(len(alpha))*pi/2)
         print(alpha * np.tan(Lx * alpha) - beta)
         print(np.arange(n)*pi/2)
+        
+    if disp:
+        Tanaly = analy(T1, Ta, h, lamb, Lx, Ly, Nx, Ny, n=n, err=err)
+        X = np.arange(Tanaly.shape[0]) / Nx * Lx
+        Y = np.arange(Tanaly.shape[1]) / Ny * Ly
+        
+        
+        fig, ax3 = plt.subplots(figsize=(8,6))
+        
+        im = ax3.pcolormesh(Y,X,Tanaly)
+        im2 = ax3.contour(Y,X,Tanaly, colors="k")
+        plt.clabel(im2, inline=1, fontsize=10)
+        zou = fig.colorbar(im)
+        zou.ax.set_ylabel('Température en Kelvin')
+        plt.title("Analytic")
+        ax3.set_xlabel('x(m)')
+        ax3.set_ylabel('y(m)')
+
